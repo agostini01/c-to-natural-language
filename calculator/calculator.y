@@ -41,6 +41,7 @@ void yyerror(char * msg) {
 }
 
 int main () {
+  printf("Add a statement and press CTRL+D\n");
   yyparse();
   return 0;
 }
