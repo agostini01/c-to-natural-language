@@ -1,3 +1,16 @@
+%{
+// C Declarations
+#include <stdio.h>
+
+int yylex(void);
+void yyerror(const char *msg);
+
+extern int yylineno;
+extern char *yytext;
+extern FILE *yyin;
+
+%}
+
 %token	IDENTIFIER I_CONSTANT F_CONSTANT STRING_LITERAL FUNC_NAME SIZEOF
 %token	PTR_OP INC_OP DEC_OP LEFT_OP RIGHT_OP LE_OP GE_OP EQ_OP NE_OP
 %token	AND_OP OR_OP MUL_ASSIGN DIV_ASSIGN MOD_ASSIGN ADD_ASSIGN
@@ -17,6 +30,8 @@
 
 %start translation_unit
 %%
+
+// Grammar rules
 
 primary_expression
 	: IDENTIFIER
@@ -493,7 +508,7 @@ iteration_statement
 	| FOR '(' expression_statement expression_statement ')' statement
 	| FOR '(' expression_statement expression_statement expression ')' statement
 	| FOR '(' declaration expression_statement ')' statement
-	| FOR '(' declaration expression_statement expression ')' statement
+	| FOR '(' declaration expression_statement expression ')' statement               {printf("Execute %s while %s!\n", $1, $3);}
 	;
 
 jump_statement
@@ -515,7 +530,7 @@ external_declaration
 	;
 
 function_definition
-	: declaration_specifiers declarator declaration_list compound_statement
+	: declaration_specifiers declarator declaration_list compound_statement 
 	| declaration_specifiers declarator compound_statement
 	;
 
@@ -525,11 +540,35 @@ declaration_list
 	;
 
 %%
-#include <stdio.h>
 
-void yyerror(const char *s)
+// Aditional C code
+
+void yyerror(const char *msg)
 {
 	fflush(stdout);
-	fprintf(stderr, "*** %s\n", s);
+	fprintf(stderr,"\n%d: %s at '%s'\n", yylineno, msg, yytext);
 }
 
+int main(int argc, char* argv[])
+{
+  FILE* input = fopen(argv[1], "r");
+  if (!input)
+  {
+    fprintf(stderr, "Bad input. Nonexistant file\n"); 
+    fprintf(stderr, "Starting interactive mode\n"); 
+
+    yyparse();
+    return 0;
+
+  } else
+  { 
+
+    yyin = input;
+
+    do 
+    {
+      yyparse();
+    } while (!feof(yyin));
+  }
+
+}

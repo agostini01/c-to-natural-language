@@ -23,7 +23,7 @@ WS  [ \t\v\n\f]
 
 %{
 #include <stdio.h>
-#include "c99.tab.h"
+#include "c11.tab.h"
 
 extern void yyerror(const char *);  /* prints grammar violation message */
 

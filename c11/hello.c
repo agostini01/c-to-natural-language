@@ -1,5 +1,5 @@
-#include<stdio.h>
 
 void main() {
-  aprintf("Test\n");
+  for (int i = 0; i<5; ++i)
+    aprintf("Test\n");
 }

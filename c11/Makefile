@@ -1,4 +1,4 @@
-PARSER=c99
+PARSER=c11
 
 all: $(PARSER)
 
